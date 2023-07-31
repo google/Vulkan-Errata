@@ -13,5 +13,5 @@ This file is an overview of issues defined in `errata/*.yaml`, sorted by importa
 
 | Name | Severity | Category | Affected Drivers | Affected Platforms | Fixed in latest drivers? |
 |------|:--------:|:--------:|:----------------:|:------------------:|:------------------------:|
-
+| [`get_query_result_does_not_wait_for_completion`](get_query_result_does_not_wait_for_completion.md) | low | rendering | ArmProprietary, NvidiaProprietary | All | Some |
 
