@@ -41,6 +41,7 @@ typedef struct KnownIssue
 
 typedef struct KnownIssues
 {
+    struct KnownIssue flipped_present_region_rectangle_origin;
     struct KnownIssue point_size_not_clamped;
 } KnownIssues;
 

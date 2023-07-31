@@ -125,6 +125,12 @@ VkResult GetKnownIssues(
 
 
 
+    issues->flipped_present_region_rectangle_origin.affected = (isAndroid);
+    issues->flipped_present_region_rectangle_origin.name = "flipped_present_region_rectangle_origin";
+    issues->flipped_present_region_rectangle_origin.camelCaseName = "flippedPresentRegionRectangleOrigin";
+    issues->flipped_present_region_rectangle_origin.description = "The rectangles passed in VkPresentRegionKHR are processed as if having a bottom-left origin (as in EGL) instead of a top-left origin (per Vulkan).";
+    issues->flipped_present_region_rectangle_origin.condition = "(isAndroid)";
+
     issues->point_size_not_clamped.affected = (isNvidiaProprietary && isLinux && device->driverVersion < NvidiaProprietaryVersion(421,0,0,0)) ||
         (isNvidiaProprietary && isWindows && device->driverVersion < NvidiaProprietaryVersion(430,0,0,0));
     issues->point_size_not_clamped.name = "point_size_not_clamped";

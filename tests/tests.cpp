@@ -199,3 +199,19 @@ TEST(Errata, NvidiaProprietary_500)
     EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Linux"), nullptr);
     EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Windows"), nullptr);
 }
+
+TEST(Errata, Android)
+{
+    VkPhysicalDeviceProperties device = MakeDevice(ArmProprietaryVersion(42, 0), VENDOR_ARM, DEVICE_unspecified, "");
+
+    VulkanErrataKnownIssues issues;
+    VkResult result = vulkanErrataGetKnownIssues(VulkanErrataPlatformAndroid, &device, nullptr, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_TRUE(issues.flipped_present_region_rectangle_origin.affected);
+
+    result = vulkanErrataGetKnownIssues(VulkanErrataPlatformLinux, &device, nullptr, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_FALSE(issues.flipped_present_region_rectangle_origin.affected);
+}
