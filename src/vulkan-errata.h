@@ -44,6 +44,7 @@ typedef struct VulkanErrataKnownIssue
 typedef struct VulkanErrataKnownIssues
 {
     struct VulkanErrataKnownIssue flipped_present_region_rectangle_origin;
+    struct VulkanErrataKnownIssue incorrect_dynamic_stencil_write_mask_state;
     struct VulkanErrataKnownIssue point_size_not_clamped;
 } VulkanErrataKnownIssues;
 

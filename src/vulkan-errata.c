@@ -131,6 +131,12 @@ VkResult vulkanErrataGetKnownIssues(
     issues->flipped_present_region_rectangle_origin.description = "The rectangles passed in VkPresentRegionKHR are processed as if having a bottom-left origin (as in EGL) instead of a top-left origin (per Vulkan).";
     issues->flipped_present_region_rectangle_origin.condition = "(isAndroid)";
 
+    issues->incorrect_dynamic_stencil_write_mask_state.affected = (isArmProprietary && device->driverVersion < ArmProprietaryVersion(43,0,0,0));
+    issues->incorrect_dynamic_stencil_write_mask_state.name = "incorrect_dynamic_stencil_write_mask_state";
+    issues->incorrect_dynamic_stencil_write_mask_state.camelCaseName = "incorrectDynamicStencilWriteMaskState";
+    issues->incorrect_dynamic_stencil_write_mask_state.description = "A value of 0 in the (unused) stencil write mask static state makes the corresponding dynamic state malfunction in the presence of discard or alpha to coverage.";
+    issues->incorrect_dynamic_stencil_write_mask_state.condition = "(isArmProprietary && device->driverVersion < ArmProprietaryVersion(43,0,0,0))";
+
     issues->point_size_not_clamped.affected = (isNvidiaProprietary && isLinux && device->driverVersion < NvidiaProprietaryVersion(421,0,0,0)) ||
         (isNvidiaProprietary && isWindows && device->driverVersion < NvidiaProprietaryVersion(430,0,0,0));
     issues->point_size_not_clamped.name = "point_size_not_clamped";

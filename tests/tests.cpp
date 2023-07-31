@@ -215,3 +215,42 @@ TEST(Errata, Android)
     ASSERT_EQ(result, VK_SUCCESS);
     EXPECT_FALSE(issues.flipped_present_region_rectangle_origin.affected);
 }
+
+TEST(Errata, ArmProprietary_38)
+{
+    VkPhysicalDeviceProperties device = MakeDevice(ArmProprietaryVersion(38, 0), VENDOR_ARM, DEVICE_unspecified, "");
+    VkPhysicalDeviceDriverProperties driver = MakeDriver(VK_DRIVER_ID_ARM_PROPRIETARY, "ARM", "ARM",
+            VkConformanceVersion{1, 3, 6, 0});
+
+    VulkanErrataKnownIssues issues;
+    VkResult result = vulkanErrataGetKnownIssues(VulkanErrataPlatformAndroid, &device, &driver, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_TRUE(issues.incorrect_dynamic_stencil_write_mask_state.affected);
+}
+
+TEST(Errata, ArmProprietary_42)
+{
+    VkPhysicalDeviceProperties device = MakeDevice(ArmProprietaryVersion(42, 0), VENDOR_ARM, DEVICE_unspecified, "");
+    VkPhysicalDeviceDriverProperties driver = MakeDriver(VK_DRIVER_ID_ARM_PROPRIETARY, "ARM", "ARM",
+            VkConformanceVersion{1, 3, 6, 0});
+
+    VulkanErrataKnownIssues issues;
+    VkResult result = vulkanErrataGetKnownIssues(VulkanErrataPlatformAndroid, &device, &driver, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_TRUE(issues.incorrect_dynamic_stencil_write_mask_state.affected);
+}
+
+TEST(Errata, ArmProprietary_43)
+{
+    VkPhysicalDeviceProperties device = MakeDevice(ArmProprietaryVersion(43, 0), VENDOR_ARM, DEVICE_unspecified, "");
+    VkPhysicalDeviceDriverProperties driver = MakeDriver(VK_DRIVER_ID_ARM_PROPRIETARY, "ARM", "ARM",
+            VkConformanceVersion{1, 3, 6, 0});
+
+    VulkanErrataKnownIssues issues;
+    VkResult result = vulkanErrataGetKnownIssues(VulkanErrataPlatformAndroid, &device, &driver, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_FALSE(issues.incorrect_dynamic_stencil_write_mask_state.affected);
+}

@@ -1,0 +1,15 @@
+# Copyright 2023 Google LLC
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+---
+incorrect_dynamic_stencil_write_mask_state:
+  description: >
+    A value of 0 in the (unused) stencil write mask static state makes the
+    corresponding dynamic state malfunction in the presence of discard or alpha
+    to coverage.
+  category: rendering
+  severity: low
+  affected:
+    - driver: VK_DRIVER_ID_ARM_PROPRIETARY
+      version_fixed: 43
