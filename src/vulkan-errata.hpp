@@ -41,7 +41,7 @@ typedef struct KnownIssue
 
 typedef struct KnownIssues
 {
-
+    struct KnownIssue incorrect_dynamic_stencil_write_mask_state;
 } KnownIssues;
 
 // Automatically fill in the struct fields based on platform, device and driver properties.
