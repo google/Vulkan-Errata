@@ -1,0 +1,7 @@
+# vim files
+*~
+.*.sw*
+.sw*
+
+# build output
+build*/

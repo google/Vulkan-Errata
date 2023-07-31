@@ -1,0 +1,40 @@
+#! /usr/bin/bash
+#
+# Copyright 2023 Google LLC
+#
+# SPDX-License-Identifier: Apache-2.0
+
+root_dir=$(dirname -- "${BASH_SOURCE[0]}")/..
+generate_script="$root_dir"/scripts/generate.py
+errata_dir="$root_dir"/errata
+src_dir="$root_dir"/src
+doc_dir="$root_dir"/doc
+tmp_dir="$(mktemp -d)"
+suffixes=(h hpp c cpp)
+
+# Call the generate script
+"$generate_script" --outdir "$tmp_dir"
+
+# Make sure there is no diff
+for suffix in "${suffixes[@]}"; do
+  src_file="$src_dir/vulkan-errata.$suffix"
+  tmp_file="$tmp_dir/vulkan-errata.$suffix"
+  if ! diff "$tmp_file" "$src_file"; then
+    echo "src/vulkan-errata.$suffix is out of date. Please run scripts/generate.py"
+    exit 1
+  fi
+done
+
+if ! diff "$tmp_dir/README.md" "$doc_dir/README.md"; then
+  echo "doc/README.md is out of date. Please run scripts/generate.py"
+  exit 1
+fi
+
+# Make sure there is a doc file for every issue
+for file in "$errata_dir"/*.yaml; do
+  name=$(basename ${file%.yaml})
+  if ! test -e "$doc_dir/$name.md"; then
+    echo "Missing documentation for $name under doc/$name.md"
+    exit 1
+  fi
+done
