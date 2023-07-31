@@ -41,7 +41,7 @@ typedef struct KnownIssue
 
 typedef struct KnownIssues
 {
-
+    struct KnownIssue point_size_not_clamped;
 } KnownIssues;
 
 // Automatically fill in the struct fields based on platform, device and driver properties.
