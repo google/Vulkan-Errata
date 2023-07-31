@@ -1,0 +1,15 @@
+# Copyright 2023 Google LLC
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+---
+get_query_result_does_not_wait_for_completion:
+  description: >
+    Calling vkGetQueryPoolResults with VK_QUERY_RESULT_WAIT_BIT does not
+    correctly wait for query results to be available.
+  category: rendering
+  severity: low
+  affected:
+    - driver: VK_DRIVER_ID_NVIDIA_PROPRIETARY
+      version_fixed: 470
+    - driver: VK_DRIVER_ID_ARM_PROPRIETARY
