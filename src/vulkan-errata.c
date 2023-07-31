@@ -131,6 +131,13 @@ VkResult vulkanErrataGetKnownIssues(
     issues->flipped_present_region_rectangle_origin.description = "The rectangles passed in VkPresentRegionKHR are processed as if having a bottom-left origin (as in EGL) instead of a top-left origin (per Vulkan).";
     issues->flipped_present_region_rectangle_origin.condition = "(isAndroid)";
 
+    issues->get_query_result_does_not_wait_for_completion.affected = (isNvidiaProprietary && device->driverVersion < NvidiaProprietaryVersion(470,0,0,0)) ||
+        (isArmProprietary);
+    issues->get_query_result_does_not_wait_for_completion.name = "get_query_result_does_not_wait_for_completion";
+    issues->get_query_result_does_not_wait_for_completion.camelCaseName = "getQueryResultDoesNotWaitForCompletion";
+    issues->get_query_result_does_not_wait_for_completion.description = "Calling vkGetQueryPoolResults with VK_QUERY_RESULT_WAIT_BIT does not correctly wait for query results to be available.";
+    issues->get_query_result_does_not_wait_for_completion.condition = "(isNvidiaProprietary && device->driverVersion < NvidiaProprietaryVersion(470,0,0,0)) || (isArmProprietary)";
+
     issues->incorrect_dynamic_stencil_write_mask_state.affected = (isArmProprietary && device->driverVersion < ArmProprietaryVersion(43,0,0,0));
     issues->incorrect_dynamic_stencil_write_mask_state.name = "incorrect_dynamic_stencil_write_mask_state";
     issues->incorrect_dynamic_stencil_write_mask_state.camelCaseName = "incorrectDynamicStencilWriteMaskState";

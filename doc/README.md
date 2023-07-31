@@ -13,8 +13,10 @@ This file is an overview of issues defined in `errata/*.yaml`, sorted by importa
 
 | Name | Severity | Category | Affected Driver | Affected Devices | Affected Platforms | Fixed in latest drivers? |
 |------|:--------:|:--------:|:---------------:|:----------------:|:------------------:|:------------------------:|
+| [`get_query_result_does_not_wait_for_completion`](get_query_result_does_not_wait_for_completion.md) | low | rendering | NvidiaProprietary | All | All | Yes |
 | [`incorrect_dynamic_stencil_write_mask_state`](incorrect_dynamic_stencil_write_mask_state.md) | low | rendering | ArmProprietary | All | All | Yes |
 | [`point_size_not_clamped`](point_size_not_clamped.md) | low | rendering | NvidiaProprietary | All | Linux | Yes |
 | [`point_size_not_clamped`](point_size_not_clamped.md) | low | rendering | NvidiaProprietary | All | Windows | Yes |
 | [`flipped_present_region_rectangle_origin`](flipped_present_region_rectangle_origin.md) | high | rendering | All | All | Android | No |
+| [`get_query_result_does_not_wait_for_completion`](get_query_result_does_not_wait_for_completion.md) | low | rendering | ArmProprietary | All | All | No |
 

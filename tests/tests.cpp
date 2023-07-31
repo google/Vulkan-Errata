@@ -158,6 +158,12 @@ TEST(Errata, NvidiaProprietary_400)
     EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Linux"), nullptr);
     EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Windows"), nullptr);
 
+    EXPECT_TRUE(issues.get_query_result_does_not_wait_for_completion.affected);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.name, "get_query_result_does_not_wait_for_completion"), 0);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.camelCaseName, "getQueryResultDoesNotWaitForCompletion"), 0);
+    EXPECT_NE(strcmp(issues.get_query_result_does_not_wait_for_completion.description, ""), 0);
+    EXPECT_NE(strstr(issues.get_query_result_does_not_wait_for_completion.condition, "Nvidia"), nullptr);
+
     result = vulkanErrataGetKnownIssues(VulkanErrataPlatformWindows, &device, &driver, &issues);
 
     ASSERT_EQ(result, VK_SUCCESS);
@@ -168,6 +174,12 @@ TEST(Errata, NvidiaProprietary_400)
     EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Nvidia"), nullptr);
     EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Linux"), nullptr);
     EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Windows"), nullptr);
+
+    EXPECT_TRUE(issues.get_query_result_does_not_wait_for_completion.affected);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.name, "get_query_result_does_not_wait_for_completion"), 0);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.camelCaseName, "getQueryResultDoesNotWaitForCompletion"), 0);
+    EXPECT_NE(strcmp(issues.get_query_result_does_not_wait_for_completion.description, ""), 0);
+    EXPECT_NE(strstr(issues.get_query_result_does_not_wait_for_completion.condition, "Nvidia"), nullptr);
 }
 
 TEST(Errata, NvidiaProprietary_500)
@@ -188,6 +200,12 @@ TEST(Errata, NvidiaProprietary_500)
     EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Linux"), nullptr);
     EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Windows"), nullptr);
 
+    EXPECT_FALSE(issues.get_query_result_does_not_wait_for_completion.affected);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.name, "get_query_result_does_not_wait_for_completion"), 0);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.camelCaseName, "getQueryResultDoesNotWaitForCompletion"), 0);
+    EXPECT_NE(strcmp(issues.get_query_result_does_not_wait_for_completion.description, ""), 0);
+    EXPECT_NE(strstr(issues.get_query_result_does_not_wait_for_completion.condition, "Nvidia"), nullptr);
+
     result = vulkanErrataGetKnownIssues(VulkanErrataPlatformWindows, &device, &driver, &issues);
 
     ASSERT_EQ(result, VK_SUCCESS);
@@ -198,6 +216,12 @@ TEST(Errata, NvidiaProprietary_500)
     EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Nvidia"), nullptr);
     EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Linux"), nullptr);
     EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Windows"), nullptr);
+
+    EXPECT_FALSE(issues.get_query_result_does_not_wait_for_completion.affected);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.name, "get_query_result_does_not_wait_for_completion"), 0);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.camelCaseName, "getQueryResultDoesNotWaitForCompletion"), 0);
+    EXPECT_NE(strcmp(issues.get_query_result_does_not_wait_for_completion.description, ""), 0);
+    EXPECT_NE(strstr(issues.get_query_result_does_not_wait_for_completion.condition, "Nvidia"), nullptr);
 }
 
 TEST(Errata, Android)
@@ -227,6 +251,7 @@ TEST(Errata, ArmProprietary_38)
 
     ASSERT_EQ(result, VK_SUCCESS);
     EXPECT_TRUE(issues.incorrect_dynamic_stencil_write_mask_state.affected);
+    EXPECT_TRUE(issues.get_query_result_does_not_wait_for_completion.affected);
 }
 
 TEST(Errata, ArmProprietary_42)
@@ -240,6 +265,7 @@ TEST(Errata, ArmProprietary_42)
 
     ASSERT_EQ(result, VK_SUCCESS);
     EXPECT_TRUE(issues.incorrect_dynamic_stencil_write_mask_state.affected);
+    EXPECT_TRUE(issues.get_query_result_does_not_wait_for_completion.affected);
 }
 
 TEST(Errata, ArmProprietary_43)
@@ -253,4 +279,5 @@ TEST(Errata, ArmProprietary_43)
 
     ASSERT_EQ(result, VK_SUCCESS);
     EXPECT_FALSE(issues.incorrect_dynamic_stencil_write_mask_state.affected);
+    EXPECT_TRUE(issues.get_query_result_does_not_wait_for_completion.affected);
 }
