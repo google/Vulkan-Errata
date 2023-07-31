@@ -1,0 +1,18 @@
+#! /usr/bin/bash
+#
+# Copyright 2023 Google LLC
+#
+# SPDX-License-Identifier: Apache-2.0
+
+root_dir=$(realpath "$(dirname -- "${BASH_SOURCE[0]}")/..")
+build_dir=$(mktemp -d)
+
+# Build and run the tests
+pushd "$build_dir"
+cmake -DCMAKE_BUILD_TYPE=Debug "$root_dir"
+make -j4
+./errata_tests
+if [ $? != 0 ]; then
+  exit 1
+fi
+popd

@@ -1,0 +1,14 @@
+// Copyright 2023 Google LLC
+// SPDX-License-Identifier: CC-BY-4.0
+
+= LICENSE file for the google/Vulkan-Errata project
+
+Files in this repository fall under one of these licenses:
+
+* SPDX license identifier: "`Apache-2.0`"
+  * Apache License 2.0 found in `LICENSES/Apache-2.0`
+  * Used for all code
+
+* SPDX license identifier: "`CC-BY-4.0`"
+  * Creative Commons Attribution 4.0 International found in `LICENSES/CC-BY-4.0`
+  * For data files such as `errata/*.yaml`
