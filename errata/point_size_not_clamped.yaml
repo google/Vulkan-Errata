@@ -1,0 +1,18 @@
+# Copyright 2023 Google LLC
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+---
+point_size_not_clamped:
+  description: >
+    The PointSize shader built-in is not clamped to the API-specified limit as
+    required.
+  category: rendering
+  severity: low
+  affected:
+    - driver: VK_DRIVER_ID_NVIDIA_PROPRIETARY
+      platform: Linux
+      version_fixed: 421
+    - driver: VK_DRIVER_ID_NVIDIA_PROPRIETARY
+      platform: Windows
+      version_fixed: 430
