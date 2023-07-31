@@ -13,5 +13,6 @@ This file is an overview of issues defined in `errata/*.yaml`, sorted by importa
 
 | Name | Severity | Category | Affected Driver | Affected Devices | Affected Platforms | Fixed in latest drivers? |
 |------|:--------:|:--------:|:---------------:|:----------------:|:------------------:|:------------------------:|
-
+| [`point_size_not_clamped`](point_size_not_clamped.md) | low | rendering | NvidiaProprietary | All | Linux | Yes |
+| [`point_size_not_clamped`](point_size_not_clamped.md) | low | rendering | NvidiaProprietary | All | Windows | Yes |
 

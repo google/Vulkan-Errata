@@ -125,6 +125,12 @@ VkResult GetKnownIssues(
 
 
 
+    issues->point_size_not_clamped.affected = (isNvidiaProprietary && isLinux && device->driverVersion < NvidiaProprietaryVersion(421,0,0,0)) ||
+        (isNvidiaProprietary && isWindows && device->driverVersion < NvidiaProprietaryVersion(430,0,0,0));
+    issues->point_size_not_clamped.name = "point_size_not_clamped";
+    issues->point_size_not_clamped.camelCaseName = "pointSizeNotClamped";
+    issues->point_size_not_clamped.description = "The PointSize shader built-in is not clamped to the API-specified limit as required.";
+    issues->point_size_not_clamped.condition = "(isNvidiaProprietary && isLinux && device->driverVersion < NvidiaProprietaryVersion(421,0,0,0)) || (isNvidiaProprietary && isWindows && device->driverVersion < NvidiaProprietaryVersion(430,0,0,0))";
 
     return VK_SUCCESS;
 }

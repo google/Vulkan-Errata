@@ -105,7 +105,7 @@ TEST(Errata, NegativeAPI)
     EXPECT_EQ(result, VK_ERROR_INITIALIZATION_FAILED);
 
     // The output struct must always be provided
-    VkPhysicalDeviceProperties device = MakeDevice(NvidiaProprietaryVersion(400, 0), VENDOR_NVIDIA, DEVICE_unspecified);
+    VkPhysicalDeviceProperties device = MakeDevice(NvidiaProprietaryVersion(400, 0), VENDOR_NVIDIA, DEVICE_unspecified, "");
     result = vulkanErrataGetKnownIssues(VulkanErrataPlatformLinux, &device, nullptr, nullptr);
     EXPECT_EQ(result, VK_ERROR_INITIALIZATION_FAILED);
 
@@ -114,14 +114,88 @@ TEST(Errata, NegativeAPI)
     EXPECT_EQ(result, VK_ERROR_INCOMPATIBLE_DRIVER);
 
     // Bogus vendorID values should cause a failure
-    device = MakeDevice(NvidiaProprietaryVersion(400, 0), 0x123456, DEVICE_unspecified);
+    device = MakeDevice(NvidiaProprietaryVersion(400, 0), 0x123456, DEVICE_unspecified, "");
     result = vulkanErrataGetKnownIssues(VulkanErrataPlatformLinux, &device, nullptr, &issues);
     EXPECT_EQ(result, VK_ERROR_INCOMPATIBLE_DRIVER);
 
     // Bogus driverID values should cause a failure
-    device = MakeDevice(NvidiaProprietaryVersion(400, 0), VENDOR_NVIDIA, DEVICE_unspecified);
+    device = MakeDevice(NvidiaProprietaryVersion(400, 0), VENDOR_NVIDIA, DEVICE_unspecified, "");
     VkPhysicalDeviceDriverProperties driver = MakeDriver((VkDriverId)0x99999999, "NVIDIA", "NVIDIA",
             VkConformanceVersion{1, 3, 0, 0});
     result = vulkanErrataGetKnownIssues(VulkanErrataPlatformLinux, &device, &driver, &issues);
     EXPECT_EQ(result, VK_ERROR_INCOMPATIBLE_DRIVER);
+}
+
+TEST(Errata, NoDriverInfo)
+{
+    VkPhysicalDeviceProperties device = MakeDevice(NvidiaProprietaryVersion(400, 0), VENDOR_NVIDIA, DEVICE_unspecified, "");
+    VulkanErrataKnownIssues issues = {};
+    VkResult result = vulkanErrataGetKnownIssues(VulkanErrataPlatformLinux, &device, nullptr, &issues);
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_TRUE(issues.point_size_not_clamped.affected);
+
+    device = MakeDevice(NvidiaProprietaryVersion(500, 0), VENDOR_NVIDIA, DEVICE_unspecified, "");
+    result = vulkanErrataGetKnownIssues(VulkanErrataPlatformWindows, &device, nullptr, &issues);
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_FALSE(issues.point_size_not_clamped.affected);
+}
+
+TEST(Errata, NvidiaProprietary_400)
+{
+    VkPhysicalDeviceProperties device = MakeDevice(NvidiaProprietaryVersion(400, 0), VENDOR_NVIDIA, DEVICE_unspecified, "");
+    VkPhysicalDeviceDriverProperties driver = MakeDriver(VK_DRIVER_ID_NVIDIA_PROPRIETARY, "NVIDIA", "NVIDIA",
+            VkConformanceVersion{1, 3, 0, 0});
+
+    VulkanErrataKnownIssues issues;
+    VkResult result = vulkanErrataGetKnownIssues(VulkanErrataPlatformLinux, &device, &driver, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_TRUE(issues.point_size_not_clamped.affected);
+    EXPECT_EQ(strcmp(issues.point_size_not_clamped.name, "point_size_not_clamped"), 0);
+    EXPECT_EQ(strcmp(issues.point_size_not_clamped.camelCaseName, "pointSizeNotClamped"), 0);
+    EXPECT_NE(strcmp(issues.point_size_not_clamped.description, ""), 0);
+    EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Nvidia"), nullptr);
+    EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Linux"), nullptr);
+    EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Windows"), nullptr);
+
+    result = vulkanErrataGetKnownIssues(VulkanErrataPlatformWindows, &device, &driver, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_TRUE(issues.point_size_not_clamped.affected);
+    EXPECT_EQ(strcmp(issues.point_size_not_clamped.name, "point_size_not_clamped"), 0);
+    EXPECT_EQ(strcmp(issues.point_size_not_clamped.camelCaseName, "pointSizeNotClamped"), 0);
+    EXPECT_NE(strcmp(issues.point_size_not_clamped.description, ""), 0);
+    EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Nvidia"), nullptr);
+    EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Linux"), nullptr);
+    EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Windows"), nullptr);
+}
+
+TEST(Errata, NvidiaProprietary_500)
+{
+    VkPhysicalDeviceProperties device = MakeDevice(NvidiaProprietaryVersion(500, 0), VENDOR_NVIDIA, DEVICE_unspecified, "");
+    VkPhysicalDeviceDriverProperties driver = MakeDriver(VK_DRIVER_ID_NVIDIA_PROPRIETARY, "NVIDIA", "NVIDIA",
+            VkConformanceVersion{1, 3, 0, 0});
+
+    VulkanErrataKnownIssues issues;
+    VkResult result = vulkanErrataGetKnownIssues(VulkanErrataPlatformLinux, &device, &driver, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_FALSE(issues.point_size_not_clamped.affected);
+    EXPECT_EQ(strcmp(issues.point_size_not_clamped.name, "point_size_not_clamped"), 0);
+    EXPECT_EQ(strcmp(issues.point_size_not_clamped.camelCaseName, "pointSizeNotClamped"), 0);
+    EXPECT_NE(strcmp(issues.point_size_not_clamped.description, ""), 0);
+    EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Nvidia"), nullptr);
+    EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Linux"), nullptr);
+    EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Windows"), nullptr);
+
+    result = vulkanErrataGetKnownIssues(VulkanErrataPlatformWindows, &device, &driver, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_FALSE(issues.point_size_not_clamped.affected);
+    EXPECT_EQ(strcmp(issues.point_size_not_clamped.name, "point_size_not_clamped"), 0);
+    EXPECT_EQ(strcmp(issues.point_size_not_clamped.camelCaseName, "pointSizeNotClamped"), 0);
+    EXPECT_NE(strcmp(issues.point_size_not_clamped.description, ""), 0);
+    EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Nvidia"), nullptr);
+    EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Linux"), nullptr);
+    EXPECT_NE(strstr(issues.point_size_not_clamped.condition, "Windows"), nullptr);
 }

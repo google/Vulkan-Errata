@@ -43,7 +43,7 @@ typedef struct VulkanErrataKnownIssue
 
 typedef struct VulkanErrataKnownIssues
 {
-
+    struct VulkanErrataKnownIssue point_size_not_clamped;
 } VulkanErrataKnownIssues;
 
 // Automatically fill in the struct fields based on platform, device and driver properties.
