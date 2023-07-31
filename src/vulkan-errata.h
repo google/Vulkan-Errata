@@ -43,7 +43,7 @@ typedef struct VulkanErrataKnownIssue
 
 typedef struct VulkanErrataKnownIssues
 {
-
+    struct VulkanErrataKnownIssue flipped_present_region_rectangle_origin;
 } VulkanErrataKnownIssues;
 
 // Automatically fill in the struct fields based on platform, device and driver properties.
