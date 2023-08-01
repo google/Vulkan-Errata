@@ -41,7 +41,7 @@ typedef struct KnownIssue
 
 typedef struct KnownIssues
 {
-
+    struct KnownIssue get_query_result_does_not_wait_for_completion;
 } KnownIssues;
 
 // Automatically fill in the struct fields based on platform, device and driver properties.

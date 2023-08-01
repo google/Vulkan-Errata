@@ -115,6 +115,12 @@ VkResult vulkanErrataGetKnownIssues(
     if (!isNvidiaProprietary && !isQualcommProprietary && !isArmProprietary && !isIntelOpenSourceMesa && !isSamsungProprietary)
         return VK_ERROR_INCOMPATIBLE_DRIVER;
 
+    issues->get_query_result_does_not_wait_for_completion.affected = (isNvidiaProprietary && device->driverVersion < NvidiaProprietaryVersion(470,0,0,0)) ||
+        (isArmProprietary);
+    issues->get_query_result_does_not_wait_for_completion.name = "get_query_result_does_not_wait_for_completion";
+    issues->get_query_result_does_not_wait_for_completion.camelCaseName = "getQueryResultDoesNotWaitForCompletion";
+    issues->get_query_result_does_not_wait_for_completion.description = "Calling vkGetQueryPoolResults with VK_QUERY_RESULT_WAIT_BIT does not correctly wait for query results to be available.";
+    issues->get_query_result_does_not_wait_for_completion.condition = "(isNvidiaProprietary && device->driverVersion < NvidiaProprietaryVersion(470,0,0,0)) || (isArmProprietary)";
 
     return VK_SUCCESS;
 }

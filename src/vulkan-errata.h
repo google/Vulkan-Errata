@@ -43,7 +43,7 @@ typedef struct VulkanErrataKnownIssue
 
 typedef struct VulkanErrataKnownIssues
 {
-
+    struct VulkanErrataKnownIssue get_query_result_does_not_wait_for_completion;
 } VulkanErrataKnownIssues;
 
 // Automatically fill in the struct fields based on platform, device and driver properties.

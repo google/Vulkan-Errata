@@ -121,3 +121,94 @@ TEST(Errata, NegativeAPI)
     result = vulkanErrataGetKnownIssues(VulkanErrataPlatformLinux, &device, &driver, &issues);
     EXPECT_EQ(result, VK_ERROR_INCOMPATIBLE_DRIVER);
 }
+
+TEST(Errata, NvidiaProprietary_400)
+{
+    VkPhysicalDeviceProperties device = MakeDevice(NvidiaProprietaryVersion(400, 0), VENDOR_NVIDIA, DEVICE_unspecified);
+    VkPhysicalDeviceDriverProperties driver = MakeDriver(VK_DRIVER_ID_NVIDIA_PROPRIETARY, "NVIDIA", "NVIDIA",
+            VkConformanceVersion{1, 3, 0, 0});
+
+    VulkanErrataKnownIssues issues;
+    VkResult result = vulkanErrataGetKnownIssues(VulkanErrataPlatformLinux, &device, &driver, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_TRUE(issues.get_query_result_does_not_wait_for_completion.affected);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.name, "get_query_result_does_not_wait_for_completion"), 0);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.camelCaseName, "getQueryResultDoesNotWaitForCompletion"), 0);
+    EXPECT_NE(strcmp(issues.get_query_result_does_not_wait_for_completion.description, ""), 0);
+    EXPECT_NE(strstr(issues.get_query_result_does_not_wait_for_completion.condition, "Nvidia"), nullptr);
+
+    result = vulkanErrataGetKnownIssues(VulkanErrataPlatformWindows, &device, &driver, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_TRUE(issues.get_query_result_does_not_wait_for_completion.affected);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.name, "get_query_result_does_not_wait_for_completion"), 0);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.camelCaseName, "getQueryResultDoesNotWaitForCompletion"), 0);
+    EXPECT_NE(strcmp(issues.get_query_result_does_not_wait_for_completion.description, ""), 0);
+    EXPECT_NE(strstr(issues.get_query_result_does_not_wait_for_completion.condition, "Nvidia"), nullptr);
+}
+
+TEST(Errata, NvidiaProprietary_500)
+{
+    VkPhysicalDeviceProperties device = MakeDevice(NvidiaProprietaryVersion(500, 0), VENDOR_NVIDIA, DEVICE_unspecified);
+    VkPhysicalDeviceDriverProperties driver = MakeDriver(VK_DRIVER_ID_NVIDIA_PROPRIETARY, "NVIDIA", "NVIDIA",
+            VkConformanceVersion{1, 3, 0, 0});
+
+    VulkanErrataKnownIssues issues;
+    VkResult result = vulkanErrataGetKnownIssues(VulkanErrataPlatformLinux, &device, &driver, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_FALSE(issues.get_query_result_does_not_wait_for_completion.affected);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.name, "get_query_result_does_not_wait_for_completion"), 0);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.camelCaseName, "getQueryResultDoesNotWaitForCompletion"), 0);
+    EXPECT_NE(strcmp(issues.get_query_result_does_not_wait_for_completion.description, ""), 0);
+    EXPECT_NE(strstr(issues.get_query_result_does_not_wait_for_completion.condition, "Nvidia"), nullptr);
+
+    result = vulkanErrataGetKnownIssues(VulkanErrataPlatformWindows, &device, &driver, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_FALSE(issues.get_query_result_does_not_wait_for_completion.affected);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.name, "get_query_result_does_not_wait_for_completion"), 0);
+    EXPECT_EQ(strcmp(issues.get_query_result_does_not_wait_for_completion.camelCaseName, "getQueryResultDoesNotWaitForCompletion"), 0);
+    EXPECT_NE(strcmp(issues.get_query_result_does_not_wait_for_completion.description, ""), 0);
+    EXPECT_NE(strstr(issues.get_query_result_does_not_wait_for_completion.condition, "Nvidia"), nullptr);
+}
+
+TEST(Errata, ArmProprietary_38)
+{
+    VkPhysicalDeviceProperties device = MakeDevice(ArmProprietaryVersion(38, 0), VENDOR_ARM, DEVICE_unspecified);
+    VkPhysicalDeviceDriverProperties driver = MakeDriver(VK_DRIVER_ID_ARM_PROPRIETARY, "ARM", "ARM",
+            VkConformanceVersion{1, 3, 6, 0});
+
+    VulkanErrataKnownIssues issues;
+    VkResult result = vulkanErrataGetKnownIssues(VulkanErrataPlatformAndroid, &device, &driver, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_TRUE(issues.get_query_result_does_not_wait_for_completion.affected);
+}
+
+TEST(Errata, ArmProprietary_42)
+{
+    VkPhysicalDeviceProperties device = MakeDevice(ArmProprietaryVersion(42, 0), VENDOR_ARM, DEVICE_unspecified);
+    VkPhysicalDeviceDriverProperties driver = MakeDriver(VK_DRIVER_ID_ARM_PROPRIETARY, "ARM", "ARM",
+            VkConformanceVersion{1, 3, 6, 0});
+
+    VulkanErrataKnownIssues issues;
+    VkResult result = vulkanErrataGetKnownIssues(VulkanErrataPlatformAndroid, &device, &driver, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_TRUE(issues.get_query_result_does_not_wait_for_completion.affected);
+}
+
+TEST(Errata, ArmProprietary_43)
+{
+    VkPhysicalDeviceProperties device = MakeDevice(ArmProprietaryVersion(43, 0), VENDOR_ARM, DEVICE_unspecified);
+    VkPhysicalDeviceDriverProperties driver = MakeDriver(VK_DRIVER_ID_ARM_PROPRIETARY, "ARM", "ARM",
+            VkConformanceVersion{1, 3, 6, 0});
+
+    VulkanErrataKnownIssues issues;
+    VkResult result = vulkanErrataGetKnownIssues(VulkanErrataPlatformAndroid, &device, &driver, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_TRUE(issues.get_query_result_does_not_wait_for_completion.affected);
+}
