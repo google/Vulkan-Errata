@@ -41,7 +41,7 @@ Use the following links to report bugs to hardware vendors (based on `VkDriverId
 - `VK_DRIVER_ID_JUICE_PROPRIETARY`: Use internal partner channels
 - `VK_DRIVER_ID_MOLTENVK`: https://github.com/KhronosGroup/MoltenVK/issues
 - `VK_DRIVER_ID_NVIDIA_PROPRIETARY`: https://www.nvidia.com/en-us/geforce/forums/support/
-- `VK_DRIVER_ID_QUALCOMM_PROPRIETARY`: Use internal partner channels
+- `VK_DRIVER_ID_QUALCOMM_PROPRIETARY`: https://developer.qualcomm.com/forums/software/adreno-gpu-sdk
 - `VK_DRIVER_ID_SAMSUNG_PROPRIETARY`: https://developer.samsung.com/issues-and-bugs
 - `VK_DRIVER_ID_VERISILICON_PROPRIETARY`: Use internal partner channels
 - `VK_DRIVER_ID_*MESA*` (all Mesa drivers): https://gitlab.freedesktop.org/mesa/mesa/-/issues
