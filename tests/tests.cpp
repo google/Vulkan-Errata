@@ -121,3 +121,19 @@ TEST(Errata, NegativeAPI)
     result = vulkanErrataGetKnownIssues(VulkanErrataPlatformLinux, &device, &driver, &issues);
     EXPECT_EQ(result, VK_ERROR_INCOMPATIBLE_DRIVER);
 }
+
+TEST(Errata, Android)
+{
+    VkPhysicalDeviceProperties device = MakeDevice(ArmProprietaryVersion(42, 0), VENDOR_ARM, DEVICE_unspecified);
+
+    VulkanErrataKnownIssues issues;
+    VkResult result = vulkanErrataGetKnownIssues(VulkanErrataPlatformAndroid, &device, nullptr, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_TRUE(issues.flipped_present_region_rectangle_origin.affected);
+
+    result = vulkanErrataGetKnownIssues(VulkanErrataPlatformLinux, &device, nullptr, &issues);
+
+    ASSERT_EQ(result, VK_SUCCESS);
+    EXPECT_FALSE(issues.flipped_present_region_rectangle_origin.affected);
+}

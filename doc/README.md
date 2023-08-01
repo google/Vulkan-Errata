@@ -13,5 +13,5 @@ This file is an overview of issues defined in `errata/*.yaml`, sorted by importa
 
 | Name | Severity | Category | Affected Drivers | Affected Platforms | Fixed in latest drivers? |
 |------|:--------:|:--------:|:----------------:|:------------------:|:------------------------:|
-
+| [`flipped_present_region_rectangle_origin`](flipped_present_region_rectangle_origin.md) | high | rendering | All | Android | No |
 

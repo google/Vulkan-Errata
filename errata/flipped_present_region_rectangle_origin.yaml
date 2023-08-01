@@ -1,0 +1,13 @@
+# Copyright 2023 Google LLC
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+---
+flipped_present_region_rectangle_origin:
+  description: >
+    The rectangles passed in VkPresentRegionKHR are processed as if having a
+    bottom-left origin (as in EGL) instead of a top-left origin (per Vulkan).
+  category: rendering
+  severity: high
+  affected:
+    - platform: Android

@@ -115,6 +115,11 @@ VkResult GetKnownIssues(
     if (!isNvidiaProprietary && !isQualcommProprietary && !isArmProprietary && !isIntelOpenSourceMesa && !isSamsungProprietary)
         return VK_ERROR_INCOMPATIBLE_DRIVER;
 
+    issues->flipped_present_region_rectangle_origin.affected = (isAndroid);
+    issues->flipped_present_region_rectangle_origin.name = "flipped_present_region_rectangle_origin";
+    issues->flipped_present_region_rectangle_origin.camelCaseName = "flippedPresentRegionRectangleOrigin";
+    issues->flipped_present_region_rectangle_origin.description = "The rectangles passed in VkPresentRegionKHR are processed as if having a bottom-left origin (as in EGL) instead of a top-left origin (per Vulkan).";
+    issues->flipped_present_region_rectangle_origin.condition = "(isAndroid)";
 
     return VK_SUCCESS;
 }
