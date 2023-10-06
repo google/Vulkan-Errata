@@ -77,6 +77,8 @@ template_source = u"""// GENERATED FILE - DO NOT EDIT.
 
 #include "vulkan-errata.{header_suffix}"
 
+#include <string.h>
+
 {namespace_begin}
 
 {vendor_list}
@@ -120,6 +122,12 @@ static bool IsDriver(const VkPhysicalDeviceProperties *device,
     return device->vendorID == vendorID;
 }}
 
+static bool IsDevice(const VkPhysicalDeviceProperties *device,
+    const char *substring)
+{{
+    return strstr(device->deviceName, substring) != NULL;
+}}
+
 // Given the conformance version that the driver advertises it has passed and the version in which
 // the scenario triggering the bug is known to be tested, decide if the driver is affected by the
 // bug.  If the driver has passed at least that conformance version, it's assumed that the bug is
@@ -157,6 +165,8 @@ VkResult {errata_function_prefix}GetKnownIssues(
     if ({neither_driver})
         return VK_ERROR_INCOMPATIBLE_DRIVER;
 
+{device_shortname_list}
+
 {errata_member_evaluations}
     return VK_SUCCESS;
 }}
@@ -169,6 +179,8 @@ template_vendor = u"""#define VENDOR_{name} {id}"""
 template_platform_shortname = u"""    const bool is{name} = platform == {platform_enum_prefix}{name};"""
 
 template_driver_shortname = u"""    const bool is{name} = IsDriver(device, driver, {id}, VENDOR_{vendor});"""
+
+template_device_shortname = u"""    const bool is{vendor}_{name} = IsDevice(device, {string});"""
 
 template_issue_evaluation = u"""    issues->{name}.affected = {condition};
     issues->{name}.name = "{name}";
@@ -223,16 +235,41 @@ SPDX-License-Identifier: CC-BY-4.0
 
 This file is an overview of issues defined in `errata/*.yaml`, sorted by importance.
 
-| Name | Severity | Category | Affected Drivers | Affected Platforms | Fixed in latest drivers? |
-|------|:--------:|:--------:|:----------------:|:------------------:|:------------------------:|
+| Name | Severity | Category | Affected Driver | Affected Devices | Affected Platforms | Fixed in latest drivers? |
+|------|:--------:|:--------:|:---------------:|:----------------:|:------------------:|:------------------------:|
 {overview_rows}
 
 """
 
-template_overview_row = u"""| [`{name}`]({name}.md) | {severity} | {category} | {drivers} | {platforms} | {fixed} |"""
+template_overview_row = u"""| [`{name}`]({name}.md) | {severity} | {category} | {driver} | {devices} | {platforms} | {fixed} |"""
 
 def get_issue_names(db):
     return sorted(db.keys())
+
+def get_devices(device):
+    if isinstance(device, list):
+        return device
+    else:
+        return [device]
+
+def get_device_list(db):
+    devices = []
+    for _,issue in sorted(db.items()):
+        conds = issue['affected']
+        for cond in conds:
+            if 'device' not in cond.keys():
+                continue
+
+            # Devices require a driver name just so the associated vendor would be known
+            assert('driver' in cond)
+
+            driver = cond['driver']
+            vendor = get_vendor_name(driver)
+
+            for device in get_devices(cond['device']):
+                devices.append((vendor, device))
+
+    return devices
 
 def make_camel_case(name):
     assert '_' in name, 'feature names in the yaml file are expected to be in snake_case'
@@ -269,6 +306,16 @@ def make_driver_shortnames():
             vendor = vendor
         ) for name,(id,vendor) in driver_map.items())
 
+def make_device_c_name(name):
+    return re.sub('[^0-9a-zA-Z]', '_', name)
+
+def make_device_shortnames(devices):
+    return '\n'.join(template_device_shortname.format(
+            vendor = vendor,
+            name = make_device_c_name(device),
+            string = '"' + device + '"'
+        ) for vendor,device in devices)
+
 def get_driver_name(driverID):
     for name,(id,_) in driver_map.items():
         if id == driverID:
@@ -277,8 +324,26 @@ def get_driver_name(driverID):
     print('Driver ID ' + driverID + ' is missing from driver map')
     assert(False)
 
+def get_vendor_name(driverID):
+    for _,(id,vendor) in driver_map.items():
+        if id == driverID:
+            return vendor
+
+    print('Driver ID ' + driverID + ' is missing from driver map')
+    assert(False)
+
 def make_driver_condition(driverID):
     return 'is' + get_driver_name(driverID)
+
+def make_device_condition(driverID, device):
+    vendor = get_vendor_name(driverID)
+    if isinstance(device, list):
+        result = []
+        for d in device:
+            result.append('is' + vendor + '_' + make_device_c_name(d))
+        return '(' + ' || '.join(result) + ')'
+    else:
+        return 'is' + vendor + '_' + make_device_c_name(device)
 
 def check_platform_inlist(platform):
     if platform not in platform_list:
@@ -323,6 +388,7 @@ def get_issue_single_condition(cond):
     #
     # - `driver: X` evaluates as `driver->driverID == X` (if driver is
     #    provided) or `device->vendorID == vendor(X)`
+    # - 'devices: X,Y'` evaluates as `strstr(device, X) || strstr(device, Y)`
     # - `platform: X,Y` evaluates as `platform == X || platform == Y`
     # - `version_start: X` evaluates as `device->driverVersion >= X`
     # - `version_fixed: X` evaluates as `device->driverVersion < X`
@@ -336,6 +402,8 @@ def get_issue_single_condition(cond):
     result = []
     if 'driver' in cond:
         result.append(make_driver_condition(cond['driver']))
+    if 'device' in cond:
+        result.append(make_device_condition(cond['driver'], cond['device']))
     if 'platform' in cond:
         result.append(make_platform_condition(cond['platform']))
     if 'version_start' in cond:
@@ -390,7 +458,7 @@ def make_header_and_source(header_suffix, namespace_begin, namespace_end,
                 extern_c_begin, extern_c_end,
                 errata_type_prefix, errata_function_prefix,
                 platform_enum_type_prefix, platform_enum_prefix, platform_enum_qualifier,
-                names, evaluations):
+                names, devices, evaluations):
 
     platforms = make_platform_list(platform_enum_prefix)
     errata_member_list = make_issue_members(errata_type_prefix, names)
@@ -409,6 +477,7 @@ def make_header_and_source(header_suffix, namespace_begin, namespace_end,
     vendor_list = make_vendor_list()
     platform_shortname_list = make_platform_shortnames(platform_enum_qualifier + platform_enum_prefix)
     driver_shortname_list = make_driver_shortnames()
+    device_shortname_list = make_device_shortnames(devices)
     neither_platform = ' && '.join(['!is' + name for name in platform_list])
     neither_driver = ' && '.join(['!is' + name for name in driver_map.keys()])
 
@@ -422,6 +491,7 @@ def make_header_and_source(header_suffix, namespace_begin, namespace_end,
         platform_enum_type_prefix = platform_enum_type_prefix,
         platform_shortname_list = platform_shortname_list,
         driver_shortname_list = driver_shortname_list,
+        device_shortname_list = device_shortname_list,
         neither_platform = neither_platform,
         neither_driver = neither_driver,
         errata_member_evaluations = evaluations)
@@ -439,26 +509,21 @@ category_rank_map = {
     'performance': 2,
 }
 
-def get_fixed_rank(affected_count, fixed_count):
+def get_fixed_rank(fixed):
     # The worst bugs are those that are not fixed
-    if fixed_count == 0:
+    if fixed:
         return 0
-    # Then, bugs that are fixed on some platforms only are higher priority than those fixed everywhere
-    if fixed_count < affected_count:
-        return 1
-    return 2
+    return 1
 
 def get_issue_rank(issue):
-    name, severity, category, platforms, drivers, affected_count, fixed_count = issue
+    name, severity, category, _, _, _, fixed = issue
 
     severity_rank = severity_rank_map[severity]
     category_rank = category_rank_map[category]
-    fixed_rank = get_fixed_rank(affected_count, fixed_count)
+    fixed_rank = get_fixed_rank(fixed)
 
-    # Sort first by fixed or not, then severity, then category, then number of drivers affected, then
-    # number of platforms affected, then total number of affected, and if all else is equal, by name.
-    return (fixed_rank, severity_rank, category_rank, -len(drivers), -len(platforms),
-            -affected_count, name)
+    # Sort first by fixed or not, then severity, then category, and if all else is equal, by name.
+    return (fixed_rank, severity_rank, category_rank, name)
 
 def get_issues_overview(db):
     issue_list = []
@@ -467,39 +532,29 @@ def get_issues_overview(db):
         severity = issue['severity']
         category = issue['category']
         affected = issue['affected']
-        affected_platforms = set([driver['platform']
-                                  for driver in affected
-                                  if 'platform' in driver])
-        affected_drivers = set([get_driver_name(driver['driver'])
-                                for driver in affected
-                                if 'driver' in driver])
-        fixed_count = len([driver
-                           for driver in affected
-                           if 'version_fixed' in driver])
 
-        issue_list.append((name, severity, category, affected_platforms,
-                           affected_drivers, len(affected), fixed_count))
+        for cond in affected:
+            platform = cond.get('platform', 'All')
+            driver = get_driver_name(cond['driver']) if 'driver' in cond else 'All'
+            devices = ', '.join(get_devices(cond['device'])) if 'device' in cond else 'All'
+            fixed = 'version_fixed' in cond
+
+            issue_list.append((name, severity, category, platform, driver, devices, fixed))
 
     issue_list.sort(key=get_issue_rank)
     return issue_list
 
 def make_overview_row(issue):
-    name, severity, category, platforms, drivers, affected_count, fixed_count = issue
-
-    drivers = 'All' if len(drivers) == 0 else ', '.join(sorted(drivers))
-    platforms = 'All' if len(platforms) == 0 else ', '.join(sorted(platforms))
-
-    fixed = 'Yes'
-    if fixed_count < affected_count:
-        fixed = 'No' if fixed_count == 0 else 'Some'
+    name, severity, category, platform, driver, devices, fixed = issue
 
     return template_overview_row.format(
         name = name,
         severity = severity,
         category = category,
-        drivers = drivers,
-        platforms = platforms,
-        fixed = fixed)
+        driver = driver,
+        devices = devices,
+        platforms = platform,
+        fixed = 'Yes' if fixed else 'No')
 
 def make_readme(overview):
     rows = '\n'.join([make_overview_row(issue) for issue in overview])
@@ -566,6 +621,9 @@ def main():
     # Get the issue names for the headers
     names = get_issue_names(db)
 
+    # Get the device architecture names used throughout the database
+    devices = get_device_list(db)
+
     # Get the issue evaluations
     evaluations = make_issue_evaluations(db)
 
@@ -589,6 +647,7 @@ extern "C" {
         platform_enum_prefix = 'VulkanErrataPlatform',
         platform_enum_qualifier = '',
         names = names,
+        devices = devices,
         evaluations = evaluations)
 
     cpp_header, cpp_source = make_header_and_source(
@@ -603,6 +662,7 @@ extern "C" {
         platform_enum_prefix = '',
         platform_enum_qualifier = 'vulkan_errata::Platform::',
         names = names,
+        devices = devices,
         evaluations = evaluations)
 
     targets = {

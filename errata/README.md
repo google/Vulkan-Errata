@@ -23,6 +23,7 @@ name:
   severity: high|low
   affected:
     - driver: VK_DRIVER_ID_...
+    - device: device
     - platform: Android|ChromeOS|Fuchsia|IOS|Linux|Mac|Windows
     - version_start: N (or A.B, A.B.C, A.B.C.D)
     - version_fixed: N (or A.B, A.B.C, A.B.C.D)
@@ -32,6 +33,9 @@ name:
 In the above:
 
  * `driver` is optional; some bugs affect a platform regardless of driver
+ * `device` is optional; some bugs only affect certain devices.  This is a
+   list of substrings of VkPhysicalDeviceProperties::deviceName.  If this field
+   is present, the `driver` field should also be present
  * `platform` is optional; some bugs affect a driver regardless of platform
  * `version_start` and `version_fixed` are optional, but if present `driver`
    must also be present.  The version values are driver dependent.

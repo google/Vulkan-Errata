@@ -7,6 +7,8 @@
 
 #include "vulkan-errata.hpp"
 
+#include <string.h>
+
 namespace vulkan_errata {
 
 #define VENDOR_AMD 0x1002
@@ -68,6 +70,12 @@ static bool IsDriver(const VkPhysicalDeviceProperties *device,
     return device->vendorID == vendorID;
 }
 
+static bool IsDevice(const VkPhysicalDeviceProperties *device,
+    const char *substring)
+{
+    return strstr(device->deviceName, substring) != NULL;
+}
+
 // Given the conformance version that the driver advertises it has passed and the version in which
 // the scenario triggering the bug is known to be tested, decide if the driver is affected by the
 // bug.  If the driver has passed at least that conformance version, it's assumed that the bug is
@@ -114,6 +122,8 @@ VkResult GetKnownIssues(
     const bool isSamsungProprietary = IsDriver(device, driver, VK_DRIVER_ID_SAMSUNG_PROPRIETARY, VENDOR_Samsung);
     if (!isNvidiaProprietary && !isQualcommProprietary && !isArmProprietary && !isIntelOpenSourceMesa && !isSamsungProprietary)
         return VK_ERROR_INCOMPATIBLE_DRIVER;
+
+
 
 
     return VK_SUCCESS;

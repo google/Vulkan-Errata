@@ -11,7 +11,7 @@ SPDX-License-Identifier: CC-BY-4.0
 
 This file is an overview of issues defined in `errata/*.yaml`, sorted by importance.
 
-| Name | Severity | Category | Affected Drivers | Affected Platforms | Fixed in latest drivers? |
-|------|:--------:|:--------:|:----------------:|:------------------:|:------------------------:|
+| Name | Severity | Category | Affected Driver | Affected Devices | Affected Platforms | Fixed in latest drivers? |
+|------|:--------:|:--------:|:---------------:|:----------------:|:------------------:|:------------------------:|
 
 

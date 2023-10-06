@@ -64,13 +64,17 @@ static uint32_t SamsungProprietaryVersion(uint32_t major, uint32_t minor)
 static VkPhysicalDeviceProperties MakeDevice(
     uint32_t driverVersion,
     uint32_t vendorID,
-    uint32_t deviceID)
+    uint32_t deviceID,
+    const char *deviceName)
 {
-    return VkPhysicalDeviceProperties{
+    VkPhysicalDeviceProperties device = {
         .driverVersion = driverVersion,
         .vendorID = vendorID,
         .deviceID = deviceID,
     };
+
+    strcpy(device.deviceName, deviceName);
+    return device;
 }
 
 static VkPhysicalDeviceDriverProperties MakeDriver(
